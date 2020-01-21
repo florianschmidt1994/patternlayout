@@ -1,12 +1,16 @@
 .pill {
     background-color: #466365;
 
-    height: 30px;
-    width: fit-content;
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    height: 50px;
+    width: 100px;
 
     color: #F9F8F8;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 

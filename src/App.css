@@ -30,7 +30,7 @@ footer {
 
     background-color: #EB9486;
 
-    min-height: 20px;
+    height: 60px;
 
     border-radius: 5px;
     padding: 10px;
@@ -50,4 +50,10 @@ footer {
 
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.pill-list {
+    display: flex;
+    overflow: scroll;
+    height: 60px;
 }
