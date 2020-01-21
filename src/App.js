@@ -55,6 +55,8 @@ export default function App() {
         selected: []
     });
 
+    const [exampleLog, setExampleLog] = useState("");
+
     const onDragEnd = (result) => {
 
         const {source, destination} = result;
@@ -70,7 +72,7 @@ export default function App() {
             const itemsCopy = Array.from(conversions[source.droppableId]);
             const itemsCopy2 = move(itemsCopy, source.index, destination.index);
 
-            setConversions({
+            updateConversion({
                 ...conversions,
                 [source.droppableId]: itemsCopy2,
             })
@@ -88,19 +90,38 @@ export default function App() {
             clonedElement.id = "" + Math.random();
             insertAtIndexInPlace(destination.index, toCopy, clonedElement);
 
-            setConversions({
+           updateConversion({
                 [source.droppableId]: fromCopy,
                 [destination.droppableId]: toCopy
             });
         }
     };
 
+    const updateConversion = (newConversions) => {
+
+        setConversions(newConversions);
+
+        fetch("http://localhost:8080/format", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({pattern: newConversions.selected.reduce((prev, curr) => prev + "%" + curr.conversionCharacter, "")})
+        })
+            .then(resp => resp.json())
+            .then(json => setExampleLog(json.message))
+            .catch(err => {
+                // eslint-disable-next-line no-console
+                console.error(err)
+            });
+    }
+
     const onClose = (id) => {
-        setConversions({
+        updateConversion({
             available: conversions.available,
             selected: conversions.selected.filter(e => e.id !== id)
         });
-    }
+    };
 
     const templateString = () => {
         if (conversions.selected.length === 0) {
@@ -174,7 +195,7 @@ export default function App() {
                 </DragDropContext>
 
                 <div className="templateString">{templateString()}</div>
-                <Terminal/>
+                <Terminal output={exampleLog}/>
             </main>
 
             <footer>
