@@ -2,10 +2,28 @@ import './Pill.css';
 import React from 'react';
 
 export default function Pill(props) {
-    const {conversionCharacter, description, closeable = false, innerRef, onClose = () => {}, id} = props;
+    const {
+        conversionCharacter,
+        description,
+        innerRef,
+        id,
+        closeable = false,
+        isClone = false,
+        onClose = () => {},
+    } = props;
+
+    let className = "pill";
+
+    if (closeable) {
+        className += " pill-closeable";
+    }
+
+    if (isClone) {
+        className += " pill-clone";
+    }
 
     return (
-        <div {...props} ref={innerRef} className={closeable ? "pill pill-closeable" : "pill"}>
+        <div {...props} ref={innerRef} className={className}>
             <div>{description}</div>
             {closeable && <CloseButton id={id} onClose={onClose}/>}
         </div>

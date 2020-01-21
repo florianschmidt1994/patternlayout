@@ -102,6 +102,14 @@ export default function App() {
         });
     }
 
+    const templateString = () => {
+        if (conversions.selected.length === 0) {
+            return "Your template string will appear here!";
+        } else {
+            return conversions.selected.reduce((prev, curr) => prev + "%" + curr.conversionCharacter, "");
+        }
+    };
+
 
     return (
         <div className="App">
@@ -120,16 +128,20 @@ export default function App() {
                                 <PillList innerRef={provided.innerRef} {...provided.droppableProps}>
                                     {conversions.available.map((c, idx) =>
                                         <Draggable key={c.id} draggableId={c.id} index={idx}>
-                                            {(p1) =>
-                                                <Pill {...p1.draggableProps} {...p1.dragHandleProps}
-                                                      id={c.id}
-                                                      idx={idx}
-                                                      innerRef={p1.innerRef}
-                                                      conversionCharacter={c.conversionCharacter}
-                                                      description={c.name}/>}
+                                            {(p1, s1) =>
+                                                <>
+                                                    <Pill {...p1.draggableProps} {...p1.dragHandleProps}
+                                                          id={c.id}
+                                                          idx={idx}
+                                                          innerRef={p1.innerRef}
+                                                          conversionCharacter={c.conversionCharacter}
+                                                          description={c.name}/>
+                                                    {s1.isDragging && <Pill isClone={true} conversionCharacter={c.conversionCharacter} description={c.name}/>}
+                                                    {p1.placeholder}
+                                                </>
+                                            }
                                         </Draggable>
                                     )}
-                                    {provided.placeholder}
                                 </PillList>
                             )
                         }
@@ -159,28 +171,9 @@ export default function App() {
                             )
                         }
                     </Droppable>
-                    {/*<Droppable droppableId="2">*/}
-                    {/*    {*/}
-                    {/*        provided => <div>*/}
-                    {/*            <div className="dropzone">Drag your elements here!</div>*/}
-                    {/*            {conversions.map((c, idx) =>*/}
-                    {/*                <Draggable draggableId={c.name} index={idx}>*/}
-                    {/*                    {(provided) =>*/}
-                    {/*                        <Pill {...provided.draggableProps} {...provided.dragHandleProps}*/}
-                    {/*                              innerRef={provided.innerRef}*/}
-                    {/*                              conversionCharacter={c.conversionCharacter}*/}
-                    {/*                              description={c.name}/>}*/}
-                    {/*                </Draggable>*/}
-                    {/*            )}{provided.placeholder}*/}
-                    {/*        </div>*/}
-                    {/*    }*/}
-                    {/*    /Droppable>*/}
-
-                    {/*    <div className="dropzone">Drag your elements here</div>*/}
-
                 </DragDropContext>
 
-                <div className="templateString">Your template string will appear here!</div>
+                <div className="templateString">{templateString()}</div>
                 <Terminal/>
             </main>
 

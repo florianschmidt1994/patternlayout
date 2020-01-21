@@ -29,6 +29,17 @@
     justify-content: space-around;
 }
 
+.pill-clone {
+    /*background-color: #EE6C5F;*/
+}
+
+.pill-clone + div {
+    /*display: none !important;*/
+    /*width: 100px;*/
+    /*height: 100px;*/
+    /*background-color: red;*/
+}
+
 .close-button {
     width: 11px;
     height: 11px;
@@ -55,9 +66,11 @@
     width: 1px;
     background-color: #64898c;
 }
+
 .close-cross:before {
     transform: rotate(45deg);
 }
+
 .close-cross:after {
     transform: rotate(-45deg);
 }
