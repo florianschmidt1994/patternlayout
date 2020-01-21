@@ -44,6 +44,12 @@ footer {
     overflow: scroll;
 }
 
+.dropzone-empty {
+    justify-content: center;
+    color: white;
+    font-size: x-large;
+}
+
 .templateString {
     font-size: x-large;
     text-align: center;

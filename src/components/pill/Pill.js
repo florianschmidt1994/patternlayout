@@ -2,13 +2,11 @@ import './Pill.css';
 import React from 'react';
 
 export default function Pill(props) {
-    const {conversionCharacter, description, closeable = false, innerRef, id, idx} = props;
+    const {conversionCharacter, description, closeable = false, innerRef} = props;
 
     return (
-        <div {...props} ref={innerRef} className="pill">
-            id: {id}<br/>
-            idx: {idx}<br/>
-            {/*<div>{description}</div>*/}
+        <div {...props} ref={innerRef} className={closeable ? "pill pill-closeable" : "pill"}>
+            <div>{description}</div>
             {closeable && <CloseButton/>}
         </div>
     );

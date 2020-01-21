@@ -125,7 +125,9 @@ export default function App() {
                     <Droppable droppableId="selected" direction="horizontal">
                         {
                             provided => (
-                                <div className="dropzone" ref={provided.innerRef} {...provided.droppableProps}>
+                                <div
+                                    className={conversions.selected.length !== 0 ? "dropzone" : "dropzone dropzone-empty"}
+                                    ref={provided.innerRef} {...provided.droppableProps}>
                                     {conversions.selected.map((c, idx) =>
                                         <Draggable key={c.id} draggableId={c.id} index={idx}>
                                             {p1 => <Pill {...p1.draggableProps} {...p1.dragHandleProps}
@@ -133,10 +135,12 @@ export default function App() {
                                                          idx={idx}
                                                          innerRef={p1.innerRef}
                                                          conversionCharacter={c.conversionCharacter}
-                                                         description={c.name}/>}
+                                                         description={c.name}
+                                                         closeable
+                                            />}
                                         </Draggable>
                                     )}
-                                    {provided.placeholder}
+                                    {conversions.selected.length !== 0 ? provided.placeholder : "Drag your elements here"}
                                 </div>
                             )
                         }
