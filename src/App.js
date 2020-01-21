@@ -79,8 +79,14 @@ export default function App() {
             let fromCopy = Array.from(conversions[source.droppableId]);
             let toCopy = Array.from(conversions[destination.droppableId]);
 
-            const removedElement = removeAtIndexInPlace(source.index, fromCopy);
-            insertAtIndexInPlace(destination.index, toCopy, removedElement);
+            // const removedElement = removeAtIndexInPlace(source.index, fromCopy);
+
+            // create a clone!
+            const clonedElement = Object.assign({}, fromCopy[source.index]);
+
+            // TODO: Use collision-free id!
+            clonedElement.id = "" + Math.random();
+            insertAtIndexInPlace(destination.index, toCopy, clonedElement);
 
             setConversions({
                 [source.droppableId]: fromCopy,
@@ -88,6 +94,13 @@ export default function App() {
             });
         }
     };
+
+    const onClose = (id) => {
+        setConversions({
+            available: conversions.available,
+            selected: conversions.selected.filter(e => e.id !== id)
+        });
+    }
 
 
     return (
@@ -101,7 +114,7 @@ export default function App() {
 
                 <DragDropContext onDragEnd={onDragEnd}>
 
-                    <Droppable droppableId="available" direction="horizontal">
+                    <Droppable droppableId="available" direction="horizontal" isDropDisabled={true}>
                         {
                             provided => (
                                 <PillList innerRef={provided.innerRef} {...provided.droppableProps}>
@@ -132,15 +145,16 @@ export default function App() {
                                         <Draggable key={c.id} draggableId={c.id} index={idx}>
                                             {p1 => <Pill {...p1.draggableProps} {...p1.dragHandleProps}
                                                          id={c.id}
-                                                         idx={idx}
                                                          innerRef={p1.innerRef}
                                                          conversionCharacter={c.conversionCharacter}
                                                          description={c.name}
+                                                         onClose={onClose}
                                                          closeable
                                             />}
                                         </Draggable>
                                     )}
-                                    {conversions.selected.length !== 0 ? provided.placeholder : "Drag your elements here"}
+                                    {provided.placeholder}
+                                    {conversions.selected.length === 0 && "Drag your elements here"}
                                 </div>
                             )
                         }
