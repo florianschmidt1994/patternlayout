@@ -25,7 +25,7 @@ footer {
     margin: 5px;
 
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
 
     background-color: #EB9486;
@@ -40,6 +40,8 @@ footer {
     /* TODO: Remove this and make it global */
     font-family: monospace;
     z-index: 1;
+
+    overflow: scroll;
 }
 
 .templateString {

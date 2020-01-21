@@ -23,45 +23,70 @@ function move(array, from, to) {
     return array;
 }
 
+function removeAtIndexInPlace(index, array) {
+    return array.splice(index, 1)[0];
+}
+
+function insertAtIndexInPlace(index, array, element) {
+    array.splice(index, 0, element);
+}
+
+const initialData = [{id: "c-1", conversionCharacter: "c", name: 'Category'},
+    {id: "c-2", conversionCharacter: "C", name: 'Fully Qualified Classname'},
+    {id: "c-3", conversionCharacter: "d", name: 'Date'},
+    {id: "c-4", conversionCharacter: "F", name: 'Filename'},
+    {id: "c-5", conversionCharacter: "l", name: 'Call Location'},
+    {id: "c-6", conversionCharacter: "L", name: 'Line Number'},
+    {id: "c-7", conversionCharacter: "m", name: 'Message'},
+    {id: "c-8", conversionCharacter: "M", name: 'Method Name'},
+    {id: "c-9", conversionCharacter: "n", name: 'Newline'},
+    {id: "c-10", conversionCharacter: "p", name: 'Priority'},
+    {id: "c-11", conversionCharacter: "r", name: 'Layout creation time'},
+    {id: "c-12", conversionCharacter: "t", name: 'Thread'},
+    {id: "c-13", conversionCharacter: "x", name: 'Nested Diagnostic context'},
+    {id: "c-14", conversionCharacter: "X", name: 'Mapped diagnostic context'},
+    {id: "c-15", conversionCharacter: " ", name: 'Whitespace'},
+    {id: "c-16", conversionCharacter: "%", name: 'Percentage sign'}
+];
+
 export default function App() {
-    const [conversions, setConversions] = useState([
-        {id: "c-1", conversionCharacter: "c", name: 'Category'},
-        {id: "c-2", conversionCharacter: "C", name: 'Fully Qualified Classname'},
-        {id: "c-3", conversionCharacter: "d", name: 'Date'},
-        {id: "c-4", conversionCharacter: "F", name: 'Filename'},
-        {id: "c-5", conversionCharacter: "l", name: 'Call Location'},
-        {id: "c-6", conversionCharacter: "L", name: 'Line Number'},
-        {id: "c-7", conversionCharacter: "m", name: 'Message'},
-        {id: "c-8", conversionCharacter: "M", name: 'Method Name'},
-        {id: "c-9", conversionCharacter: "n", name: 'Newline'},
-        {id: "c-10", conversionCharacter: "p", name: 'Priority'},
-        {id: "c-11", conversionCharacter: "r", name: 'Layout creation time'},
-        {id: "c-12", conversionCharacter: "t", name: 'Thread'},
-        {id: "c-13", conversionCharacter: "x", name: 'Nested Diagnostic context'},
-        {id: "c-14", conversionCharacter: "X", name: 'Mapped diagnostic context'},
-        {id: "c-15", conversionCharacter: " ", name: 'Whitespace'},
-        {id: "c-16", conversionCharacter: "%", name: 'Percentage sign'},
-    ]);
+    const [conversions, setConversions] = useState({
+        available: initialData,
+        selected: []
+    });
 
     const onDragEnd = (result) => {
-
 
         const {source, destination} = result;
 
         // dropped outside the list
         if (!destination) {
-            console.log("element dragged outside of list");
             return;
         }
 
-        console.log(`Changing order from ${source.index} to ${destination.index}`);
+        // re-order within the same list
+        if (source.droppableId === destination.droppableId) {
 
+            const itemsCopy = Array.from(conversions[source.droppableId]);
+            const itemsCopy2 = move(itemsCopy, source.index, destination.index);
 
-        const itemsCopy = Array.from(conversions);
+            setConversions({
+                ...conversions,
+                [source.droppableId]: itemsCopy2,
+            })
 
-        const itemsCopy2 = move(itemsCopy, source.index, destination.index);
-        console.log("setting state to" + JSON.stringify(itemsCopy2));
-        setConversions(itemsCopy2);
+        } else {
+            let fromCopy = Array.from(conversions[source.droppableId]);
+            let toCopy = Array.from(conversions[destination.droppableId]);
+
+            const removedElement = removeAtIndexInPlace(source.index, fromCopy);
+            insertAtIndexInPlace(destination.index, toCopy, removedElement);
+
+            setConversions({
+                [source.droppableId]: fromCopy,
+                [destination.droppableId]: toCopy
+            });
+        }
     };
 
 
@@ -76,26 +101,46 @@ export default function App() {
 
                 <DragDropContext onDragEnd={onDragEnd}>
 
-                    <Droppable droppableId="1" direction="horizontal">
+                    <Droppable droppableId="available" direction="horizontal">
                         {
                             provided => (
                                 <PillList innerRef={provided.innerRef} {...provided.droppableProps}>
-                                    {conversions.map((conversion, idx) =>
-                                        <Draggable key={conversion.id} draggableId={conversion.id} index={idx}>
+                                    {conversions.available.map((c, idx) =>
+                                        <Draggable key={c.id} draggableId={c.id} index={idx}>
                                             {(p1) =>
                                                 <Pill {...p1.draggableProps} {...p1.dragHandleProps}
-                                                      id={conversion.id}
+                                                      id={c.id}
                                                       idx={idx}
                                                       innerRef={p1.innerRef}
-                                                      conversionCharacter={conversions.conversionCharacter}
-                                                      description={conversions.name}/>}
+                                                      conversionCharacter={c.conversionCharacter}
+                                                      description={c.name}/>}
                                         </Draggable>
-                                    )}{provided.placeholder}
+                                    )}
+                                    {provided.placeholder}
                                 </PillList>
                             )
                         }
                     </Droppable>
 
+                    <Droppable droppableId="selected" direction="horizontal">
+                        {
+                            provided => (
+                                <div className="dropzone" ref={provided.innerRef} {...provided.droppableProps}>
+                                    {conversions.selected.map((c, idx) =>
+                                        <Draggable key={c.id} draggableId={c.id} index={idx}>
+                                            {p1 => <Pill {...p1.draggableProps} {...p1.dragHandleProps}
+                                                         id={c.id}
+                                                         idx={idx}
+                                                         innerRef={p1.innerRef}
+                                                         conversionCharacter={c.conversionCharacter}
+                                                         description={c.name}/>}
+                                        </Draggable>
+                                    )}
+                                    {provided.placeholder}
+                                </div>
+                            )
+                        }
+                    </Droppable>
                     {/*<Droppable droppableId="2">*/}
                     {/*    {*/}
                     {/*        provided => <div>*/}
@@ -111,9 +156,9 @@ export default function App() {
                     {/*            )}{provided.placeholder}*/}
                     {/*        </div>*/}
                     {/*    }*/}
-                    {/*</Droppable>*/}
+                    {/*    /Droppable>*/}
 
-                    <div className="dropzone">Drag your elements here</div>
+                    {/*    <div className="dropzone">Drag your elements here</div>*/}
 
                 </DragDropContext>
 
