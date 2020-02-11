@@ -20,8 +20,8 @@ GIT_REV="$(git rev-parse HEAD)"&& \
 rm -rf dist && \
 rm -rf node_modules && \
 npm install && \
-NODE_ENV=prod npm run build && \
-cd dist/ && \
+NODE_ENV=prod yarn build && \
+cd build/ && \
 git init && \
 git config user.name "GitHub Actions" && \
 git config user.email "github-actions-bot@users.noreply.github.com" && \
