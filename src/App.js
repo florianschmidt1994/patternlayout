@@ -101,7 +101,7 @@ export default function App() {
 
         setConversions(newConversions);
 
-        fetch("http://localhost:8080/format", {
+        fetch("https://patternlayout-server.florianschmidt.me/format", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
